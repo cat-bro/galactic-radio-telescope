@@ -9,7 +9,8 @@ from django.views.generic.list import ListView
 from api.models import GalaxyInstance
 from registration.backends.simple.views import RegistrationView
 
-log = logging.getLogger(__name__)
+
+log = logging.getLogger('django')
 
 
 class GalaxyInstanceEdit(UpdateView):
@@ -34,16 +35,13 @@ class GalaxyInstanceConfig(DetailView):
     template_name_suffix = '.yml'
 
 
-class GalaxyInstanceCreateSuccess(DetailView):
-    model = GalaxyInstance
-    slug_field = 'id'
+class GalaxyInstanceCreateSuccess(GalaxyInstanceView):
     template_name_suffix = '_create_success'
 
     def get_context_data(self, **kwargs):
-        context = super(GalaxyInstanceCreateSuccess, self).get_context_data(**kwargs)
-        full_url = self.request.build_absolute_uri(str(reverse_lazy('galaxy-instance-create-success', args=(self.object.id, ))))
-        components = full_url.split('/')[0:-3] + ['api', 'v1', 'upload']
-        context['api_url'] = '/'.join(components)
+        context = super().get_context_data(**kwargs)
+        context['site_url'] = '/'.join(context['url'].strip('/').split('/')[:-1])
+        context['telescope_conf_link'] = '/'.join(context['url'].strip('/').split('/') + ['api', 'conf.yml'])
         return context
 
 

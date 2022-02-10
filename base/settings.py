@@ -93,11 +93,10 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
-}
-
+ }
 
 # Password validation
-# https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/1.9/ref/settings/#authpassword-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -145,3 +144,32 @@ USE_X_FORWARDED_HOST = True
 GRT_VERSION = '19.04'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 RAVEN_CONFIG = {}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} | {asctime} | {module}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'debug_log': {
+            'delay': True,
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1000000,
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'log'),
+            'formatter': 'verbose',
+            'backupCount': 14,
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['debug_log'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

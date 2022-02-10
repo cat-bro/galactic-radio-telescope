@@ -1,3 +1,4 @@
+import logging
 import json
 import re
 import os
@@ -8,6 +9,8 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from api.models import GalaxyInstance
+
+log = logging.getLogger('django')
 
 
 def compare(val1, val2):
@@ -75,8 +78,8 @@ def getconf(request):
         return galaxy
 
     url = "{}://{}{}".format(request.scheme, request.get_host(), reverse('home'))
-    rendered = render_to_string('api/galaxyinstance.yml.html', {'object': galaxy, 'auth_bypass': True, 'url': url})
-
+    site_url = '/'.join(url.strip('/').split('/')[:-1])
+    rendered = render_to_string('api/galaxyinstance.yml.html', {'object': galaxy, 'auth_bypass': True, 'url': url, 'site_url': site_url})
 
     return HttpResponse(
         content=rendered,
